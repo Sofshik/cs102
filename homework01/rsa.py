@@ -25,7 +25,6 @@ def gcd(a: int, b: int) -> int:
         i += 1
     return divider
     pass
-print(gcd(15,12))
 
 
 def multiplicative_inverse(e: int, phi: int) -> int:
