@@ -3,31 +3,29 @@ import typing as tp
 
 
 def is_prime(n: int) -> bool:
-    """
-    Tests to see if a number is prime.
-
-    >>> is_prime(2)
-    True
-    >>> is_prime(11)
-    True
-    >>> is_prime(8)
-    False
-    """
-    # PUT YOUR CODE HERE
+    value = True
+    if n != 2:
+        for i in range (2, n):
+            if n % i == 0:
+                value = False
+            else:
+                continue
+            i += 1
+        return value
+    else:
+        return value
     pass
-
 
 def gcd(a: int, b: int) -> int:
-    """
-    Euclid's algorithm for determining the greatest common divisor.
-
-    >>> gcd(12, 15)
-    3
-    >>> gcd(3, 7)
-    1
-    """
-    # PUT YOUR CODE HERE
+    for i in range (1, a):
+        if (a % i == 0) and (b % i == 0):
+            divider = i
+        else:
+            continue
+        i += 1
+    return divider
     pass
+print(gcd(15,12))
 
 
 def multiplicative_inverse(e: int, phi: int) -> int:
