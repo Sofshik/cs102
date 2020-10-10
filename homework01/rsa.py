@@ -1,10 +1,14 @@
+
 import random
 import typing as tp
 
 
 def is_prime(n: int) -> bool:
     value = True
-    if n != 2:
+    if n == 1:
+        value = False
+        return value
+    elif n != 2:
         for i in range (2, n):
             if n % i == 0:
                 value = False
@@ -17,39 +21,55 @@ def is_prime(n: int) -> bool:
     pass
 
 def gcd(a: int, b: int) -> int:
-    for i in range (1, a):
-        if (a % i == 0) and (b % i == 0):
-            divider = i
-        else:
-            continue
-        i += 1
-    return divider
+    if a == 0 and b == 0:
+        return 0
+    elif a == 0 and b != 0:
+        return b
+    elif a != 0 and b == 0:
+        return a
+    else:
+        for i in range (1, b):
+            if (a % i == 0) and (b % i == 0):
+                divider = i
+                i += 1
+            else:
+                i += 1
+        return divider
     pass
-
 
 def multiplicative_inverse(e: int, phi: int) -> int:
-    """
-    Euclid's extended algorithm for finding the multiplicative
-    inverse of two numbers.
+    p = 1
+    q = 0
+    r = 0
+    s = 1
+    a = e
+    b = phi
 
-    >>> multiplicative_inverse(7, 40)
-    23
-    """
-    # PUT YOUR CODE HERE
-    pass
-
+    while a != 0 and b != 0:
+        if a >= b:
+            a = a - b
+            p = p - r
+            q = q - s
+        else:
+            b = b - a
+            r = r - p
+            s = s - q
+    if a != 0:
+        x = p
+        d = x % phi
+        return d
+    else:
+        x = r
+        d = x % phi
+        return d
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
     if not (is_prime(p) and is_prime(q)):
         raise ValueError("Both numbers must be prime.")
     elif p == q:
         raise ValueError("p and q cannot be equal")
-
-    # n = pq
-    # PUT YOUR CODE HERE
-
-    # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
+    n = p * q
+    phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
