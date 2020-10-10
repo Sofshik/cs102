@@ -63,7 +63,8 @@ def multiplicative_inverse(e: int, phi: int) -> int:
         d = x % phi
         return d
 
-def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
+
+def generate_keypair(p: int, q: int):
     if not (is_prime(p) and is_prime(q)):
         raise ValueError("Both numbers must be prime.")
     elif p == q:
@@ -73,12 +74,8 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
-
-    # Use Euclid's Algorithm to verify that e and phi(n) are coprime
-    g = gcd(e, phi)
-    while g != 1:
+    while (is_prime(e) != True) or (e >= phi) or (gcd(e, phi) != 1):
         e = random.randrange(1, phi)
-        g = gcd(e, phi)
 
     # Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
