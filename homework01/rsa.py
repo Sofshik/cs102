@@ -29,27 +29,7 @@ def gcd(a: int, b: int) -> int:
             else:
                 continue
         return divider
-
-def generate_keypair(p: int, q: int):
-    if not (is_prime(p) and is_prime(q)):
-        raise ValueError("Both numbers must be prime.")
-    elif p == q:
-        raise ValueError("p and q cannot be equal")
-    n = p * q
-    phi = (p - 1) * (q - 1)
-
-    # Choose an integer e such that e and phi(n) are coprime
-    e = random.randrange(1, phi)
-    while (is_prime(e) != True) or (e >= phi) or (gcd(e, phi) != 1):
-        e = random.randrange(1, phi)
-
-    # Use Extended Euclid's Algorithm to generate the private key
-    d = multiplicative_inverse(e, phi)
-
-    # Return public and private keypair
-    # Public key is (e, n) and private key is (d, n)
-    return ((e, n), (d, n))
-
+        
 def multiplicative_inverse(e: int, phi: int) -> int:
     p, s, q, r = 1, 1, 0, 0
     a = e
@@ -71,6 +51,28 @@ def multiplicative_inverse(e: int, phi: int) -> int:
         x = r
         d = x % phi
         return d
+
+def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError("Both numbers must be prime.")
+    elif p == q:
+        raise ValueError("p and q cannot be equal")
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    # Choose an integer e such that e and phi(n) are coprime
+    e = random.randrange(1, phi)
+    g = gcd(e, phi)
+    while g != 1:
+        e = random.randrange(1, phi)
+        g = gcd(e, phi)
+
+    # Use Extended Euclid's Algorithm to generate the private key
+    d = multiplicative_inverse(e, phi)
+
+    # Return public and private keypair
+    # Public key is (e, n) and private key is (d, n)
+    return ((e, n), (d, n))
 
 def encrypt(pk: tp.Tuple[int, int], plaintext: str) -> tp.List[int]:
     # Unpack the key into it's components
