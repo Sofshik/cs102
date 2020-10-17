@@ -6,35 +6,35 @@ def encrypt_caesar(plaintext: str, shift: int) -> str:
     rawtext = list(plaintext)
     for letter in rawtext:
         letter = ord(letter)
-        if (letter >= ord('A') and letter <= ord('Z')) or (letter >= ord('a') and letter <= ord('z')):
-            if (letter > (ord('Z') - shift)) and (letter <= ord('Z')):
+        if ord('A') <= letter <= ord('Z') or ord('a') <= letter <= ord('z'):
+            if ord('Z') - shift < letter <= ord('Z'):
                 letter -= 26
-            elif (letter > (ord('z') - shift)) and (letter <= ord('z')):
+            elif ord('z') - shift < letter <= ord('z'):
                 letter -= 26
             letter += shift
             letter = chr(letter)
-            ciphertext = ciphertext + letter 
+            ciphertext += letter 
         else:
             letter = chr(letter)
-            ciphertext = ciphertext + letter 
+            ciphertext += letter 
     return ciphertext
-
+    
 def decrypt_caesar(ciphertext: str, shift: int) -> str:
     plaintext = ""
     rawtext = list(ciphertext)
     for letter in rawtext:
         letter = ord(letter)
-        if (letter >= ord('A') and letter <= ord('Z')) or (letter >= ord('a') and letter <= ord('z')):
-            if (letter >= ord('A')) and (letter < (ord('A') + shift)):
+        if ord('A') <= letter <= ord('Z') or ord('a') <= letter <= ord('z'):
+            if ord('A') <= letter < ord('A') + shift:
                 letter += 26 
-            elif (letter >= ord('a')) and (letter < (ord('a') + shift)):
+            elif ord('a') <= letter < ord('a') + shift:
                 letter += 26
             letter -= shift
             letter = chr(letter)
-            plaintext = plaintext + letter
+            plaintext += letter
         else:
             letter = chr(letter)
-            plaintext = plaintext + letter
+            plaintext += letter
     return plaintext
 
 d = {"python", "java", "ruby"}

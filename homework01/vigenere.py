@@ -6,20 +6,20 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     i = 0
     for letter in rawtext:
         letter = ord(letter)
-        if (letter >= ord('A') and letter <= ord('Z')) or (letter >= ord('a') and letter <= ord('z')):
-            if (letter >= ord('A')) and (letter <= ord('Z')):
-                if (letter > (ord('Z') - (ord(rawkey[i]) - 97))) and (letter <= ord('Z')):
+        if ord('A') <= letter <= ord('Z') or letter >= ord('a') <= letter <= ord('z'):
+            if ord('A') <= letter <= ord('Z'):
+                if ord('Z') - (ord(rawkey[i]) - 97) < letter <= ord('Z'):
                     letter -= 26
                 letter += (ord(rawkey[i]) - 97)
-            elif (letter >= ord('a')) and (letter <= ord('z')):
-                if (letter > (ord('z') - (ord(rawkey[i]) - 97))) and (letter <= ord('z')):
+            elif letter >= ord('a') <= letter <= ord('z'):
+                if ord('z') - (ord(rawkey[i]) - 97) < letter <= ord('z'):
                     letter -= 26
                 letter += (ord(rawkey[i]) - 97)
             letter = chr(letter)
-            ciphertext = ciphertext + letter
+            ciphertext += letter
         else:
             letter = chr(letter)
-            ciphertext = ciphertext + letter
+            ciphertext += letter
         i += 1
         if i == (length):
             i = 0
@@ -33,20 +33,20 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     i = 0
     for letter in rawtext:
         letter = ord(letter)
-        if (letter >= ord('A') and letter <= ord('Z')) or (letter >= ord('a') and letter <= ord('z')):
-            if (letter >= ord('A')) and (letter <= ord('Z')):
-                if (letter >= ord('A')) and (letter < (ord('A') + (ord(rawkey[i]) - 97))):
+        if ord('A') <= letter <= ord('Z') or ord('a') <= letter <= ord('z'):
+            if ord('A') <= letter <= ord('Z'):
+                if ord('A') <= letter < ord('A') + (ord(rawkey[i]) - 97):
                     letter += 26
                 letter -= (ord(rawkey[i]) - 97)
-            elif (letter >= ord('a')) and (letter <= ord('z')):
-                if (letter >= ord('a')) and (letter < (ord('a') + (ord(rawkey[i]) - 97))):
+            elif ord('a') <= letter <= ord('z'):
+                if ord('a') <= letter < ord('a') + (ord(rawkey[i]) - 97):
                     letter += 26
                 letter -= (ord(rawkey[i]) - 97)
             letter = chr(letter)
-            plaintext = plaintext + letter
+            plaintext += letter
         else:
             letter = chr(letter)
-            plaintext = plaintext + letter
+            plaintext += letter
         i += 1
         if i == (length):
             i = 0
