@@ -43,33 +43,34 @@ def generate_keypair(p: int, q: int):
     while (is_prime(e) != True) or (e >= phi) or (gcd(e, phi) != 1):
         e = random.randrange(1, phi)
 
-    def multiplicative_inverse(e: int, phi: int) -> int:
-        p, s, q, r = 1, 1, 0, 0
-        a = e
-        b = phi
-        while a != 0 and b != 0:
-            if a >= b:
-                a = a - b
-                p = p - r
-                q = q - s
-            else:
-                b = b - a
-                r = r - p
-                s = s - q
-        if a != 0:
-            x = p
-            d = x % phi
-            return d
-        else:
-            x = r
-            d = x % phi
-            return d
     # Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
 
     # Return public and private keypair
     # Public key is (e, n) and private key is (d, n)
     return ((e, n), (d, n))
+
+def multiplicative_inverse(e: int, phi: int) -> int:
+    p, s, q, r = 1, 1, 0, 0
+    a = e
+    b = phi
+    while a != 0 and b != 0:
+        if a >= b:
+            a = a - b
+            p = p - r
+            q = q - s
+        else:
+            b = b - a
+            r = r - p
+            s = s - q
+    if a != 0:
+        x = p
+        d = x % phi
+        return d
+    else:
+        x = r
+        d = x % phi
+        return d
 
 def encrypt(pk: tp.Tuple[int, int], plaintext: str) -> tp.List[int]:
     # Unpack the key into it's components
