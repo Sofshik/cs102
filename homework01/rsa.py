@@ -31,20 +31,19 @@ def gcd(a: int, b: int) -> int:
         return divider
         
 def multiplicative_inverse(e: int, phi: int) -> int:
-    p, s, q, r = 1, 1, 0, 0
-    a = e
-    b = phi
+    l, s, m, r = 1, 1, 0, 0
+    a, b = e, phi
     while a != 0 and b != 0:
         if a >= b:
-            a = a - b
-            p = p - r
-            q = q - s
+            a -= b
+            l -= r
+            m -= s
         else:
-            b = b - a
-            r = r - p
-            s = s - q
+            b -= a
+            r -= l
+            s -= m
     if a != 0:
-        x = p
+        x = l
         d = x % phi
         return d
     else:
