@@ -30,15 +30,6 @@ def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     return(grid[row])
 
 def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
-    """ Возвращает все значения для номера столбца, указанного в pos
-
-    >>> get_col([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
-    ['1', '4', '7']
-    >>> get_col([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (0, 1))
-    ['2', '.', '8']
-    >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
-    ['3', '6', '9']
-    """
     col = pos[1]
     column = []
     for i in range(len(grid)):
@@ -46,21 +37,28 @@ def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
         column.append(currentRow[col])
     return(column)
 
-print(get_col([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (0, 1)))
-
 def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
-    """ Возвращает все значения из квадрата, в который попадает позиция pos
+    blockRow = pos[0] // 3
+    blockCol = pos[1] // 3
+    block = []
+    for i in range(blockRow * 3, blockRow * 3 + 3):
+        line = grid[i]
+        for p in range(blockCol * 3, blockCol * 3 + 3):
+            block.append(line[p])
+    return(block)
 
-    >>> grid = read_sudoku('puzzle1.txt')
-    >>> get_block(grid, (0, 1))
-    ['5', '3', '.', '6', '.', '.', '.', '9', '8']
-    >>> get_block(grid, (4, 7))
-    ['.', '.', '3', '.', '.', '1', '.', '.', '6']
-    >>> get_block(grid, (8, 8))
-    ['2', '8', '.', '.', '.', '5', '.', '7', '9']
-    """
-    pass
-
+grid = [
+            ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+            ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+            [".", "9", "8", ".", ".", ".", ".", "6", "."],
+            ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+            ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+            ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+            [".", "6", ".", ".", ".", ".", "2", "8", "."],
+            [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+            [".", ".", ".", ".", "8", ".", ".", "7", "9"],
+        ]
+print(get_block(grid, (4, 7)))
 
 def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
     """ Найти первую свободную позицию в пазле
