@@ -39,9 +39,14 @@ def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    #col = pos[1]
-    pass
+    col = pos[1]
+    column = []
+    for i in range(len(grid)):
+        currentRow = grid[i]
+        column.append(currentRow[col])
+    return(column)
 
+print(get_col([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (0, 1)))
 
 def get_block(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     """ Возвращает все значения из квадрата, в который попадает позиция pos
