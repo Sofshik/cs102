@@ -25,19 +25,9 @@ def group(values: List[str], n: int) -> List[List[str]]:
         rawGroup.append(values[i:i+n])
     return(rawGroup)
 
-
 def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
-    """ Возвращает все значения для номера строки, указанной в pos
-
-    >>> get_row([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
-    ['1', '2', '.']
-    >>> get_row([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (1, 0))
-    ['4', '.', '6']
-    >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
-    ['.', '8', '9']
-    """
-    pass
-
+    row = pos[0]
+    return(grid[row])
 
 def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     """ Возвращает все значения для номера столбца, указанного в pos
@@ -49,6 +39,7 @@ def get_col(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
+    #col = pos[1]
     pass
 
 
@@ -140,12 +131,12 @@ def generate_sudoku(N: int) -> List[List[str]]:
     pass
 
 
-if __name__ == '__main__':
-    for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
-        grid = read_sudoku(fname)
-        display(grid)
-        solution = solve(grid)
-        if not solution:
-            print(f"Puzzle {fname} can't be solved")
-        else:
-            display(solution)
+#if __name__ == '__main__':
+    #for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
+        #grid = read_sudoku(fname)
+        #display(grid)
+        #solution = solve(grid)
+        #if not solution:
+            #print(f"Puzzle {fname} can't be solved")
+        #else:
+            #display(solution)
