@@ -67,8 +67,15 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
-
+    myRow = get_row(grid, pos)
+    myCol = get_col(grid, pos)
+    myBlock = get_block(grid, pos)
+    values = set()
+    for a in range(1, 10):
+        a = str(a)
+        if (a not in myRow) and (a not in myCol) and (a not in myBlock):
+            values.add(a)
+    return(values)
 
 def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
     """ Решение пазла, заданного в grid """
