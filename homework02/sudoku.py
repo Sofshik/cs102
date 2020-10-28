@@ -82,10 +82,25 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
                 grid[row][col] = '.'
 
 def check_solution(solution: List[List[str]]) -> bool:
-    """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
-    pass
-
+    for i in range(0, 9):
+        for j in range(0, 9):
+            pos = (i, j)
+            symbol = solution[i][j]
+            if symbol == '.':
+                return False
+            currentRow = get_row(solution, pos)
+            currentCol = get_col(solution, pos)
+            setRow = set(currentRow)
+            setCol = set(currentCol)
+            if len(setRow) != len(currentRow) or len(setCol) != len(currentCol):
+                return False
+    for r in (0, 3, 6):
+        for c in (0, 3, 6):
+            currentBlock = get_block(solution, (r, c))
+            setBlock = set(currentBlock)
+            if len(setBlock) != len(currentBlock):
+                return False
+    return True
 
 def generate_sudoku(N: int) -> List[List[str]]:
     """ Генерация судоку заполненного на N элементов
