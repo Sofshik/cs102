@@ -1,4 +1,5 @@
 from typing import Tuple, List, Set, Optional
+import random
 
 
 def read_sudoku(filename: str) -> List[List[str]]:
@@ -51,7 +52,7 @@ def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
         for l in range(len(currentRow)):
             symbol = currentRow[l]
             if symbol == '.':
-                position = [m, l]
+                position = (m, l)
                 return(position)
 
 
@@ -103,36 +104,23 @@ def check_solution(solution: List[List[str]]) -> bool:
     return True
 
 def generate_sudoku(N: int) -> List[List[str]]:
-    """ Генерация судоку заполненного на N элементов
+    grid = [['.'] * 9 for _ in range(9)]
+    sud = solve(grid)
+    N = 81 - min(81, max(0, N))
+    while N:
+        row = random.randrange(0, 9)
+        col = random.randrange(0, 9)
+        if sud[row][col] != '.':
+            sud[row][col] = '.'
+            N -= 1
+    return(sud)
 
-    >>> grid = generate_sudoku(40)
-    >>> sum(1 for row in grid for e in row if e == '.')
-    41
-    >>> solution = solve(grid)
-    >>> check_solution(solution)
-    True
-    >>> grid = generate_sudoku(1000)
-    >>> sum(1 for row in grid for e in row if e == '.')
-    0
-    >>> solution = solve(grid)
-    >>> check_solution(solution)
-    True
-    >>> grid = generate_sudoku(0)
-    >>> sum(1 for row in grid for e in row if e == '.')
-    81
-    >>> solution = solve(grid)
-    >>> check_solution(solution)
-    True
-    """
-    pass
-
-
-#if __name__ == '__main__':
-    #for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
-        #grid = read_sudoku(fname)
-        #display(grid)
-        #solution = solve(grid)
-        #if not solution:
-            #print(f"Puzzle {fname} can't be solved")
-        #else:
-            #display(solution)
+if __name__ == '__main__':
+    for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
+        grid = read_sudoku(fname)
+        display(grid)
+        solution = solve(grid)
+        if not solution:
+            print(f"Puzzle {fname} can't be solved")
+        else:
+            display(solution)
