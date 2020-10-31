@@ -107,6 +107,7 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
             if symbol == ".":
                 position = (m, l)
                 return position
+    return None
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -120,8 +121,8 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     True
     """
     values = set()
-    for a in range(1, 10):
-        a = str(a)
+    for i in range(1, 10):
+        a = str(i)
         if (
             (a not in get_row(grid, pos))
             and (a not in get_col(grid, pos))
@@ -129,6 +130,8 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
         ):
             values.add(a)
     return values
+    if not values:
+        return None
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
@@ -147,15 +150,13 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     if not position:
         return grid
     values = find_possible_values(grid, position)
-    if not values:
-        return None
-    else:
-        for i in values:
-            grid[position[0]][position[1]] = i
-            solution = solve(grid)
-            if solution:
-                return solution
-            grid[position[0]][position[1]] = "."
+    for i in values:
+        grid[position[0]][position[1]] = i
+        solution = solve(grid)
+        if solution:
+            return solution
+        grid[position[0]][position[1]] = "."
+    return None
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
@@ -178,7 +179,7 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     return True
 
 
-def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
+def generate_sudoku(N: int) -> tp.Optional[tp.List[tp.List[str]]]:
     """Генерация судоку заполненного на N элементов
     >>> grid = generate_sudoku(40)
     >>> sum(1 for row in grid for e in row if e == '.')
@@ -201,13 +202,17 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     """
     grid = [["."] * 9 for _ in range(9)]
     sud = solve(grid)
-    N = 81 - min(81, max(0, N))
-    while N:
-        row = random.randrange(0, 9)
-        col = random.randrange(0, 9)
-        if sud[row][col] != ".":
-            sud[row][col] = "."
-            N -= 1
+    if sud:
+        N = 81 - min(81, max(0, N))
+        while N:
+            row = random.randrange(0, 9)
+            col = random.randrange(0, 9)
+            if sud:
+                line = sud[row]
+            if line:
+                if line[col] != ".":
+                    line[col] = "."
+                    N -= 1
     return sud
 
 
