@@ -26,7 +26,8 @@ def display(grid: tp.List[tp.List[str]]) -> None:
     for row in range(9):
         print(
             "".join(
-                grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9)
+                grid[row][col].center(width) + ("|" if str(col) in "25" else "")
+                for col in range(9)
             )
         )
         if str(row) in "25":
@@ -42,8 +43,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    gr = [values[i : i + n] for i in range(0, len(values), n)]
-    return gr
+    return [values[i : i + n] for i in range(0, len(values), n)]
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -67,8 +67,7 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    column = [grid[i][pos[1]] for i in range(len(grid))]
-    return column
+    return [grid[i][pos[1]] for i in range(len(grid))]
 
 
 def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -83,15 +82,16 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     """
     blockRow = pos[0] // 3
     blockCol = pos[1] // 3
-    block = [
+    return [
         grid[i][p]
         for i in range(blockRow * 3, blockRow * 3 + 3)
         for p in range(blockCol * 3, blockCol * 3 + 3)
     ]
-    return block
 
 
-def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
+def find_empty_positions(
+    grid: tp.List[tp.List[str]],
+) -> tp.Optional[tp.Tuple[int, int]]:
     """Найти первую свободную позицию в пазле
     >>> find_empty_positions([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']])
     (0, 2)
@@ -105,12 +105,14 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
         for l in range(len(currentRow)):
             symbol = currentRow[l]
             if symbol == ".":
-                position = (m, l)
+                position = m, l
                 return position
     return None
 
 
-def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
+def find_possible_values(
+    grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]
+) -> tp.Set[str]:
     """Вернуть множество возможных значения для указанной позиции
     >>> grid = read_sudoku('puzzle1.txt')
     >>> values = find_possible_values(grid, (0,2))
@@ -164,17 +166,17 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     for i in range(0, 9):
         for j in range(0, 9):
             pos = (i, j)
-            symbol = solution[i][j]
-            if symbol == ".":
+            if solution[i][j] == ".":
                 return False
-            currentRow = get_row(solution, pos)
-            currentCol = get_col(solution, pos)
-            if len(set(currentRow)) != len(currentRow) or len(set(currentCol)) != len(currentCol):
+            if len(set(get_row(solution, pos))) != len(get_row(solution, pos)) or len(
+                set(get_col(solution, pos))
+            ) != len(get_col(solution, pos)):
                 return False
     for r in (0, 3, 6):
         for c in (0, 3, 6):
-            currentBlock = get_block(solution, (r, c))
-            if len(set(currentBlock)) != len(currentBlock):
+            if len(set(get_block(solution, (r, c)))) != len(
+                get_block(solution, (r, c))
+            ):
                 return False
     return True
 
