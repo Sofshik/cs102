@@ -18,12 +18,12 @@ class Console(UI):
 
     def draw_grid(self, screen) -> None:
         """ Отобразить состояние клеток. """
-        for r in range(self.life.rows):
-            for c in range(self.life.cols):
-                if self.life.curr_generation[r][c] == 1:
-                    screen.addch(r + 1, c + 1, "*")
+        for row in range(self.life.rows):
+            for col in range(self.life.cols):
+                if self.life.curr_generation[row][col] == 1:
+                    screen.addch(row + 1, col + 1, "*")
                 else:
-                    screen.addch(r + 1, c + 1, " ")
+                    screen.addch(row + 1, col + 1, " ")
 
     def run(self) -> None:
         screen = curses.initscr()
@@ -38,12 +38,12 @@ class Console(UI):
         running = True
         paused = False
         while running:
-            el = window.getch()
-            if el == ord("\n"):
+            curr_el = window.getch()
+            if curr_el == ord("\n"):
                 paused = False if paused else True
-            elif el == ord("S"):
+            elif curr_el == ord("S"):
                 self.life.save(self.save_path)
-            elif el == curses.ascii.ESC:
+            elif curr_el == curses.ascii.ESC:
                 running = False
             if not paused:
                 self.draw_grid(window)
@@ -53,3 +53,9 @@ class Console(UI):
                 time.sleep(1)
 
         curses.endwin()
+
+
+if __name__ == "__main__":
+    life = GameOfLife((15, 30), randomize=True)
+    ui = Console(life, save_path=pathlib.Path("fileui.txt"))
+    ui.run()

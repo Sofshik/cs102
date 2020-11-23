@@ -41,43 +41,43 @@ class GameOfLife:
         self.generations = 1
 
     def create_grid(self, randomize: bool = False) -> Grid:
-        grid = []
-        for r in range(self.rows):
-            el = []
-            for d in range(self.cols):
+        self.grid = []
+        for row in range(self.rows):
+            curr_el = []
+            for col in range(self.cols):
                 if randomize:
-                    el.append(random.randint(0, 1))
+                    curr_el.append(random.randint(0, 1))
                 else:
-                    el.append(0)
-            grid.append(el)
-        return grid
+                    curr_el.append(0)
+            self.grid.append(curr_el)
+        return self.grid
 
     def get_neighbours(self, cell: Cell) -> Cells:
         row, col = cell
         self.neighbours = []
-        for y in range(row - 1, row + 2):
-            for x in range(col - 1, col + 2):
+        for y_pos in range(row - 1, row + 2):
+            for x_pos in range(col - 1, col + 2):
                 val = True
-                if y == row and x == col:
+                if y_pos == row and x_pos == col:
                     val = False
-                if y < 0 or y >= self.rows:
+                if y_pos < 0 or y_pos >= self.rows:
                     val = False
-                if x < 0 or x >= self.cols:
+                if x_pos < 0 or x_pos >= self.cols:
                     val = False
                 if val:
-                    self.neighbours.append(self.curr_generation[y][x])
+                    self.neighbours.append(self.curr_generation[y_pos][x_pos])
         return self.neighbours
 
     def get_next_generation(self) -> Grid:
         self.new_grid = copy.deepcopy(self.curr_generation)
-        for r in range(self.rows):
-            for c in range(self.cols):
-                cell = (r, c)
+        for row in range(self.rows):
+            for col in range(self.cols):
+                cell = (row, col)
                 summary = sum(self.get_neighbours(cell))
                 if summary < 2 or summary > 3:
-                    self.new_grid[r][c] = 0
+                    self.new_grid[row][col] = 0
                 elif summary == 3:
-                    self.new_grid[r][c] = 1
+                    self.new_grid[row][col] = 1
         return self.new_grid
 
     def step(self) -> None:
@@ -123,7 +123,7 @@ def main():
     def gen_path(new):
         return pathlib.Path(filename.format(new)).resolve()
 
-    game = GameOfLife(size=(48, 64))
+    game = GameOfLife(size=(18, 25))
     game.step()
     game.save(gen_path(0))
 

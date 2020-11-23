@@ -1,7 +1,7 @@
 import pathlib
 
 import pygame
-from pygame.constants import K_SPACE, KEYDOWN, MOUSEBUTTONUP, QUIT, K_s
+import pygame.constants
 
 from life import GameOfLife
 from ui import UI
@@ -12,7 +12,7 @@ class GUI(UI):
         self,
         life: GameOfLife,
         save_path: pathlib.Path,
-        cell_size: int = 10,
+        cell_size: int = 20,
         speed: int = 10,
     ) -> None:
         super().__init__(life)
@@ -24,46 +24,36 @@ class GUI(UI):
         self.save_path = save_path
 
     def draw_lines(self) -> None:
-        for x in range(0, self.life.cols * self.cell_size, self.cell_size):
+        for x_pos in range(0, self.life.cols * self.cell_size, self.cell_size):
             pygame.draw.line(
                 self.screen,
                 pygame.Color("black"),
-                (x, 0),
-                (x, self.life.rows * self.cell_size),
+                (x_pos, 0),
+                (x_pos, self.life.rows * self.cell_size),
             )
-        for y in range(0, self.life.rows * self.cell_size, self.cell_size):
+        for y_pos in range(0, self.life.rows * self.cell_size, self.cell_size):
             pygame.draw.line(
                 self.screen,
                 pygame.Color("black"),
-                (0, y),
-                (self.life.cols * self.cell_size, y),
+                (0, y_pos),
+                (self.life.cols * self.cell_size, y_pos),
             )
 
     def draw_grid(self) -> None:
-        for r in range(self.life.rows):
-            for c in range(self.life.cols):
-                if self.life.curr_generation[r][c] == 1:
-                    pygame.draw.rect(
-                        self.screen,
-                        pygame.Color("green"),
-                        pygame.Rect(
-                            c * self.cell_size,
-                            r * self.cell_size,
-                            self.cell_size,
-                            self.cell_size,
-                        ),
-                    )
+        for row in self.life.grid:
+            index_row = self.life.grid.index(row)
+            for col in row:
+                index_col = row.index(col)
+                rect = pygame.Rect(
+                    0 + self.cell_size * index_col,
+                    0 + self.cell_size * index_row,
+                    self.cell_size,
+                    self.cell_size,
+                )
+                if self.life.grid[index_row][index_col]:
+                    pygame.draw.rect(self.screen, pygame.Color("green"), rect)
                 else:
-                    pygame.draw.rect(
-                        self.screen,
-                        pygame.Color("white"),
-                        pygame.Rect(
-                            c * self.cell_size,
-                            r * self.cell_size,
-                            self.cell_size,
-                            self.cell_size,
-                        ),
-                    )
+                    pygame.draw.rect(self.screen, pygame.Color("white"), rect)
 
     def run(self) -> None:
         pygame.init()
@@ -75,19 +65,19 @@ class GUI(UI):
         paused = False
         while running:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == pygame.constants.QUIT:
                     running = False
-                if event.type == KEYDOWN and event.key == K_SPACE:
+                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_SPACE:
                     paused = not paused
-                if event.type == MOUSEBUTTONUP and event.button == 1:
+                if event.type == pygame.constants.MOUSEBUTTONUP and event.button == 1:
                     position = pygame.mouse.get_pos()
-                    x = position[0] // self.cell_size
-                    y = position[1] // self.cell_size
-                    if self.life.curr_generation[y][x] == 1:
-                        self.life.curr_generation[y][x] = 0
+                    x_pos = position[0] // self.cell_size
+                    y_pos = position[1] // self.cell_size
+                    if self.life.curr_generation[y_pos][x_pos] == 1:
+                        self.life.curr_generation[y_pos][x_pos] = 0
                     else:
-                        self.life.curr_generation[y][x] = 1
-                if event.type == KEYDOWN and event.key == K_s:
+                        self.life.curr_generation[y_pos][x_pos] = 1
+                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_s:
                     self.life.save(self.save_path)
             self.draw_lines()
             if not paused:
@@ -102,5 +92,5 @@ class GUI(UI):
 
 if __name__ == "__main__":
     life = GameOfLife((18, 25), randomize=True)
-    gui = GUI(life, save_path=pathlib.Path("filegui"), cell_size=40)
+    gui = GUI(life, save_path=pathlib.Path("filegui.txt"))
     gui.run()
