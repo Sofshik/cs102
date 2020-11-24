@@ -36,9 +36,13 @@ class GameOfLife:
     def draw_lines(self) -> None:
         """ Отрисовать сетку """
         for x_pos in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (x_pos, 0), (x_pos, self.height))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (x_pos, 0), (x_pos, self.height)
+            )
         for y_pos in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (0, y_pos), (self.width, y_pos))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (0, y_pos), (self.width, y_pos)
+            )
 
     def run(self) -> None:
         """ Запустить игру """
