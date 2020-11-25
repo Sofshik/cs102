@@ -65,10 +65,7 @@ class GUI(UI):
             for event in pygame.event.get():
                 if event.type == pygame.constants.QUIT:
                     running = False
-                if (
-                    event.type == pygame.constants.KEYDOWN
-                    and event.key == pygame.constants.K_SPACE
-                ):
+                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_SPACE:
                     paused = not paused
                 if event.type == pygame.constants.MOUSEBUTTONUP and event.button == 1:
                     position = pygame.mouse.get_pos()
@@ -78,10 +75,7 @@ class GUI(UI):
                         self.life.curr_generation[y_pos][x_pos] = 0
                     else:
                         self.life.curr_generation[y_pos][x_pos] = 1
-                if (
-                    event.type == pygame.constants.KEYDOWN
-                    and event.key == pygame.constants.K_s
-                ):
+                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_s:
                     self.life.save(self.save_path)
             self.draw_lines()
             if not paused:
