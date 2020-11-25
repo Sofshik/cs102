@@ -36,32 +36,39 @@ class GameOfLife:
     def draw_lines(self) -> None:
         """ Отрисовать сетку """
         for x_pos in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (x_pos, 0), (x_pos, self.height))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (x_pos, 0), (x_pos, self.height)
+            )
         for y_pos in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color("black"), (0, y_pos), (self.width, y_pos))
+            pygame.draw.line(
+                self.screen, pygame.Color("black"), (0, y_pos), (self.width, y_pos)
+            )
 
     def run(self) -> None:
+
         """ Запустить игру """
         pygame.init()
         clock = pygame.time.Clock()
         pygame.display.set_caption("Game of Life")
         self.screen.fill(pygame.Color("white"))
+        self.grid = self.create_grid(randomize=True)
 
         running = True
         while running:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            # Отрисовка списка клеток
-            # Выполнение одного шага игры (обновление состояния ячеек)
+                if event.type == pygame.QUIT or (
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                ):
+                    pygame.quit()
+                    quit()
+            self.draw_lines()
             self.draw_grid()
             self.draw_lines()
-            self.get_next_generation()
-
+            self.grid = self.get_next_generation()
             pygame.display.flip()
             clock.tick(self.speed)
         pygame.quit()
+        quit()
 
     def create_grid(self, randomize: bool = False) -> Grid:
         """
@@ -96,20 +103,18 @@ class GameOfLife:
         """
         Отрисовка списка клеток с закрашиванием их в соответствующе цвета.
         """
-        for row in self.grid:
-            index_row = self.grid.index(row)
-            for col in row:
-                index_col = row.index(col)
+        for row in range(self.cell_height):
+            for col in range(self.cell_width):
                 rect = pygame.Rect(
-                    0 + self.cell_size * index_col,
-                    0 + self.cell_size * index_row,
+                    self.cell_size * col,
+                    self.cell_size * row,
                     self.cell_size,
                     self.cell_size,
                 )
-                if self.grid[index_row][index_col]:
-                    pygame.draw.rect(self.screen, pygame.Color("white"), rect)
+                if self.grid[row][col]:
+                    pygame.draw.rect(self.screen, pygame.Color("yellowgreen"), rect)
                 else:
-                    pygame.draw.rect(self.screen, pygame.Color("green"), rect)
+                    pygame.draw.rect(self.screen, pygame.Color("cornsilk2"), rect)
 
     def get_neighbours(self, cell: Cell) -> Cells:
         """

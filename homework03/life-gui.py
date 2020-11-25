@@ -40,20 +40,18 @@ class GUI(UI):
             )
 
     def draw_grid(self) -> None:
-        for row in self.life.grid:
-            index_row = self.life.grid.index(row)
-            for col in row:
-                index_col = row.index(col)
+        for row in range(self.life.rows):
+            for col in range(self.life.cols):
                 rect = pygame.Rect(
-                    0 + self.cell_size * index_col,
-                    0 + self.cell_size * index_row,
+                    self.cell_size * col,
+                    self.cell_size * row,
                     self.cell_size,
                     self.cell_size,
                 )
-                if self.life.grid[index_row][index_col]:
-                    pygame.draw.rect(self.screen, pygame.Color("green"), rect)
+                if self.life.curr_generation[row][col]:
+                    pygame.draw.rect(self.screen, pygame.Color("yellowgreen"), rect)
                 else:
-                    pygame.draw.rect(self.screen, pygame.Color("white"), rect)
+                    pygame.draw.rect(self.screen, pygame.Color("cornsilk2"), rect)
 
     def run(self) -> None:
         pygame.init()
@@ -67,7 +65,10 @@ class GUI(UI):
             for event in pygame.event.get():
                 if event.type == pygame.constants.QUIT:
                     running = False
-                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_SPACE:
+                if (
+                    event.type == pygame.constants.KEYDOWN
+                    and event.key == pygame.constants.K_SPACE
+                ):
                     paused = not paused
                 if event.type == pygame.constants.MOUSEBUTTONUP and event.button == 1:
                     position = pygame.mouse.get_pos()
@@ -77,7 +78,10 @@ class GUI(UI):
                         self.life.curr_generation[y_pos][x_pos] = 0
                     else:
                         self.life.curr_generation[y_pos][x_pos] = 1
-                if event.type == pygame.constants.KEYDOWN and event.key == pygame.constants.K_s:
+                if (
+                    event.type == pygame.constants.KEYDOWN
+                    and event.key == pygame.constants.K_s
+                ):
                     self.life.save(self.save_path)
             self.draw_lines()
             if not paused:
