@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 
-from pyvcs.cli import cmd_cat_file  # type: ignore; type: ignore
+from pyvcs.cli import cmd_cat_file  # type: ignore
 from pyvcs.cli import cmd_checkout  # type: ignore
 from pyvcs.cli import cmd_commit_tree  # type: ignore
 from pyvcs.cli import cmd_hash_object  # type: ignore
