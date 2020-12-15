@@ -1,19 +1,17 @@
 import argparse
 import pathlib
 
-from pyvcs.cli import ( # type: ignore
-    cmd_cat_file, # type: ignore
-    cmd_checkout, # type: ignore
-    cmd_commit_tree, # type: ignore
-    cmd_hash_object, # type: ignore
-    cmd_init, # type: ignore
-    cmd_ls_files, # type: ignore
-    cmd_rev_parse, # type: ignore
-    cmd_symbolic_ref, # type: ignore
-    cmd_update_index, # type: ignore
-    cmd_update_ref, # type: ignore
-    cmd_write_tree, # type: ignore
-)
+from pyvcs.cli import cmd_cat_file  # type: ignore; type: ignore
+from pyvcs.cli import cmd_checkout  # type: ignore
+from pyvcs.cli import cmd_commit_tree  # type: ignore
+from pyvcs.cli import cmd_hash_object  # type: ignore
+from pyvcs.cli import cmd_init  # type: ignore
+from pyvcs.cli import cmd_ls_files  # type: ignore
+from pyvcs.cli import cmd_rev_parse  # type: ignore
+from pyvcs.cli import cmd_symbolic_ref  # type: ignore
+from pyvcs.cli import cmd_update_index  # type: ignore
+from pyvcs.cli import cmd_update_ref  # type: ignore
+from pyvcs.cli import cmd_write_tree  # type: ignore
 
 
 def add_init_subparser(subparsers) -> None:

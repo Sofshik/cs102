@@ -1,5 +1,6 @@
+from setuptools import setup  # type: ignore
+
 import pyvcs
-from setuptools import setup # type: ignore
 
 AUTHOR = "Dmitrii Sorokin"
 AUTHOR_EMAIL = "dementiy@yandex.ru"
