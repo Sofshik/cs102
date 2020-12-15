@@ -10,9 +10,7 @@ from pyvcs.objects import hash_object  # type: ignore
 from pyvcs.refs import get_ref, is_detached, resolve_head, update_ref  # type: ignore
 
 
-def write_tree(
-    gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = ""
-) -> str:
+def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
     files_list = [x.absolute() for x in (gitdir.parent / dirname).glob("*")]
     to_add_dirs: tp.Dict[str, tp.List[GitIndexEntry]]
     to_add_dirs = dict()

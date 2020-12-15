@@ -26,11 +26,7 @@ class GitIndexEntry(tp.NamedTuple):
 
     def pack(self) -> bytes:
         return struct.pack(
-            ">10I20sh"
-            + str(len(self.name))
-            + "s"
-            + str(8 - (62 + len(self.name)) % 8)
-            + "x",
+            ">10I20sh" + str(len(self.name)) + "s" + str(8 - (62 + len(self.name)) % 8) + "x",
             self.ctime_s,
             self.ctime_n,
             self.mtime_s,
@@ -48,9 +44,7 @@ class GitIndexEntry(tp.NamedTuple):
 
     @staticmethod
     def unpack(data: bytes) -> "GitIndexEntry":
-        index_unpacked_content = struct.unpack(
-            ">10I20sh" + str(len(data) - 62) + "s", data
-        )
+        index_unpacked_content = struct.unpack(">10I20sh" + str(len(data) - 62) + "s", data)
         return GitIndexEntry(
             *(
                 list(index_unpacked_content[:-1])
@@ -104,9 +98,7 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
             print(entry.name)
 
 
-def update_index(
-    gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True
-) -> None:
+def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
     entries = {entry.name: entry for entry in read_index(gitdir)}
     for path in paths:
         if str(path) in entries:
