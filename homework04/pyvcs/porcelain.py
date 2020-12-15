@@ -3,7 +3,13 @@ import pathlib
 import typing as tp
 
 from pyvcs.index import read_index, update_index  # type: ignore
-from pyvcs.objects import commit_parse, find_object, find_tree_files, read_object, read_tree
+from pyvcs.objects import (  # type: ignore
+    commit_parse,  # type: ignore
+    find_object,  # type: ignore
+    find_tree_files,  # type: ignore
+    read_object,  # type: ignore
+    read_tree,  # type: ignore
+)
 from pyvcs.refs import get_ref, is_detached, resolve_head, update_ref  # type: ignore
 from pyvcs.tree import commit_tree, write_tree  # type: ignore
 

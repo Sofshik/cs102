@@ -58,7 +58,7 @@ def read_object(sha: str, gitdir: pathlib.Path) -> tp.Tuple[str, bytes]:
     )
 
 
-def read_tree(data: bytes) -> tp.List[tp.Tuple[int, str, str]]:
+def read_tree(data: tp.Any) -> tp.List[tp.Tuple[int, str, str]]:
     tree = []
     while data:
         firstly = data.index(b"\00")
@@ -82,7 +82,7 @@ def cat_file(obj_name: str, pretty: bool = True) -> None:
                 print(f"{tree[0]:06}", "blob", tree[2] + "\t" + tree[1])
 
 
-def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str, str]]:
+def find_tree_files(tree_sha: tp.Any, gitdir: tp.Any) -> tp.Set[tp.Any]:
     objects = {tree_sha}
     for mode, path, sha in read_tree(tree_sha):
         if stat.S_ISDIR(mode):
