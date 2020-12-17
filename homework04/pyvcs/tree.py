@@ -11,47 +11,31 @@ from pyvcs.refs import get_ref, is_detached, resolve_head, update_ref  # type: i
 
 
 def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
-    files_list = [x.absolute() for x in (gitdir.parent / dirname).glob("*")]
-    to_add_dirs: tp.Dict[str, tp.List[GitIndexEntry]]
-    to_add_dirs = dict()
-    enties_to_format = []
+    tree_ins = []
     for entry in index:
-        if pathlib.Path(entry.name).absolute() in files_list:
-            enties_to_format.append(entry)
+        _, title = os.path.split(entry.name)
+        if dirname:
+            titles = dirname.split("/")
         else:
-            subdir_name = entry.name.lstrip(dirname).split("/", 1)[0]
-            if subdir_name not in to_add_dirs:
-                to_add_dirs[subdir_name] = []
-            to_add_dirs[subdir_name].append(entry)
-    for subdir_name in to_add_dirs:
-        st = (pathlib.Path(gitdir.parent) / dirname / subdir_name).stat()
-        sha = write_tree(gitdir, to_add_dirs[subdir_name], dirname + "/" + subdir_name)
-        enties_to_format.append(
-            GitIndexEntry(
-                ctime_s=int(st.st_ctime),
-                ctime_n=st.st_ctime_ns % len(str(int(st.st_ctime))),
-                mtime_s=int(st.st_mtime),
-                mtime_n=st.st_mtime_ns % len(str(int(st.st_mtime))),
-                dev=st.st_dev,
-                ino=st.st_ino,
-                mode=0o40000,
-                uid=st.st_uid,
-                gid=st.st_gid,
-                size=st.st_size,
-                sha1=bytes.fromhex(sha),
-                flags=7,
-                name=str(pathlib.Path(gitdir.parent) / dirname / subdir_name),
-            )
-        )
-    preformatted_data = b"".join(
-        oct(entry.mode)[2:].encode()
-        + b" "
-        + pathlib.Path(entry.name).name.encode()
-        + b"\00"
-        + entry.sha1
-        for entry in sorted(enties_to_format, key=lambda x: x.name)
-    )
-    return hash_object(preformatted_data, "tree", write=True)
+            titles = entry.name.split("/")
+        if len(titles) == 1:
+            if dirname and entry.name.find(dirname) == -1:
+                continue
+            with open(entry.name, "rb") as file:
+                info = file.read()
+            m = str(oct(entry.m))[2:]
+            tree_in = f"{m} {title}\0".encode()
+            tree_in += bytes.fromhex(hash_object(info, "blob", write=True))
+            tree_ins.append(tree_in)
+        else:
+            firstly = titles[0]
+            title = f"/".join(titles[1:])
+            m = "40000"
+            tree_in = f"{m} {firstly}\0".encode()
+            tree_in += bytes.fromhex(write_tree(gitdir, index, title))
+            tree_ins.append(tree_in)
+    tree_binary = b"".join(tree_ins)
+    return hash_object(tree_binary, "tree", write=True)
 
 
 def commit_tree(
