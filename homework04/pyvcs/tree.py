@@ -23,15 +23,15 @@ def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str
                 continue
             with open(entry.name, "rb") as file:
                 info = file.read()
-            m = str(oct(entry.mode))[2:]
-            tree_in = f"{m} {title}\0".encode()
+            mode = str(oct(entry.mode))[2:]
+            tree_in = f"{mode} {title}\0".encode()
             tree_in += bytes.fromhex(hash_object(info, "blob", write=True))
             tree_ins.append(tree_in)
         else:
-            firstly = titles[0]
+            prefix = titles[0]
             title = f"/".join(titles[1:])
-            m = "40000"
-            tree_in = f"{m} {firstly}\0".encode()
+            mode = "40000"
+            tree_in = f"{mode} {prefix}\0".encode()
             tree_in += bytes.fromhex(write_tree(gitdir, index, title))
             tree_ins.append(tree_in)
     tree_binary = b"".join(tree_ins)
