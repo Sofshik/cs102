@@ -1,19 +1,17 @@
 import argparse
 import pathlib
 
-from pyvcs.cli import (
-    cmd_cat_file,
-    cmd_checkout,
-    cmd_commit_tree,
-    cmd_hash_object,
-    cmd_init,
-    cmd_ls_files,
-    cmd_rev_parse,
-    cmd_symbolic_ref,
-    cmd_update_index,
-    cmd_update_ref,
-    cmd_write_tree,
-)
+from pyvcs.cli import cmd_cat_file  # type: ignore
+from pyvcs.cli import cmd_checkout  # type: ignore
+from pyvcs.cli import cmd_commit_tree  # type: ignore
+from pyvcs.cli import cmd_hash_object  # type: ignore
+from pyvcs.cli import cmd_init  # type: ignore
+from pyvcs.cli import cmd_ls_files  # type: ignore
+from pyvcs.cli import cmd_rev_parse  # type: ignore
+from pyvcs.cli import cmd_symbolic_ref  # type: ignore
+from pyvcs.cli import cmd_update_index  # type: ignore
+from pyvcs.cli import cmd_update_ref  # type: ignore
+from pyvcs.cli import cmd_write_tree  # type: ignore
 
 
 def add_init_subparser(subparsers) -> None:
@@ -97,7 +95,11 @@ def add_update_index_subparser(subparsers) -> None:
         "update-index", help="Add file contents to the index."
     )
     update_index_subparser.add_argument(
-        "paths", nargs="+", metavar="path", type=pathlib.Path, help="path(s) of files to add"
+        "paths",
+        nargs="+",
+        metavar="path",
+        type=pathlib.Path,
+        help="path(s) of files to add",
     )
     update_index_subparser.add_argument(
         "--add",

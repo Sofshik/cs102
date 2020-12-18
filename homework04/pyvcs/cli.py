@@ -1,11 +1,11 @@
 import argparse
 
-from pyvcs.index import ls_files, read_index, update_index
-from pyvcs.objects import cat_file, hash_object
-from pyvcs.porcelain import checkout, commit
-from pyvcs.refs import ref_resolve, symbolic_ref, update_ref
-from pyvcs.repo import repo_create, repo_find
-from pyvcs.tree import commit_tree, write_tree
+from pyvcs.index import ls_files, read_index, update_index  # type: ignore
+from pyvcs.objects import cat_file, hash_object  # type: ignore
+from pyvcs.porcelain import checkout, commit  # type: ignore
+from pyvcs.refs import ref_resolve, symbolic_ref, update_ref  # type: ignore
+from pyvcs.repo import repo_create, repo_find  # type: ignore
+from pyvcs.tree import commit_tree, write_tree  # type: ignore
 
 
 def cmd_init(args: argparse.Namespace) -> None:
@@ -16,9 +16,9 @@ def cmd_init(args: argparse.Namespace) -> None:
 
 def cmd_hash_object(args: argparse.Namespace) -> None:
     with args.path.open(mode="rb") as f:
-        data = f.read()
+        inf = f.read()
 
-    sha = hash_object(data, args.type, args.write)
+    sha = hash_object(inf, args.type, args.write)
     print(sha)
 
 
