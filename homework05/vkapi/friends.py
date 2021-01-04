@@ -2,9 +2,6 @@ import dataclasses
 import math
 import time
 import typing as tp
-
-import requests  # type: ignore
-
 from vkapi import config, exceptions, session  # type: ignore
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
