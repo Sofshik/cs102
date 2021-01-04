@@ -1,8 +1,10 @@
 import typing as tp
+
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from vkapi.config import VK_CONFIG
+
+from vkapi import config # type: ignore
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -45,15 +47,15 @@ class Session(requests.Session):
             total=self.max_retries,
             status_forcelist=[429, 500, 502, 503, 504],
             backoff_factor=backoff_factor,
-            allowed_methods=["HEAD", "GET", "OPTIONS"],
+            method_whitelist=["HEAD", "GET", "OPTIONS", "POST"],
         )
 
         self.timeout = timeout
         adapter = TimeoutHTTPAdapter(timeout=timeout, max_retries=retry_strategy)
         self.mount(self.base_url, adapter)
 
-    def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+    def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response: # type: ignore
         return super().get(self.base_url + "/" + url, *args, **kwargs)
 
-    def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+    def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response: # type: ignore
         return super().post(self.base_url + "/" + url, *args, **kwargs)

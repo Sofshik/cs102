@@ -2,7 +2,7 @@ import datetime as dt
 import statistics
 import typing as tp
 
-from vkapi.friends import get_friends
+from vkapi.friends import get_friends # type: ignore
 
 
 def age_predict(user_id: int) -> tp.Optional[float]:
@@ -22,12 +22,12 @@ def age_predict(user_id: int) -> tp.Optional[float]:
             birth = dt.datetime.strptime(friend["birth"], "%d.%m.%Y")  # type: ignore
         except (KeyError, ValueError):
             continue
-        ages.append(
-            now.year
+        age.append(
+            time.year
             - birth.year
-            - (now.month < birth.month or (now.month == birth.month and now.day < birth.day))
+            - (time.month < birth.month or (time.month == birth.month and time.day < birth.day))
         )
 
-    if ages:
-        return statistics.median(ages)
+    if age:
+        return statistics.median(age)
     return None
