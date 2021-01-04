@@ -1,3 +1,4 @@
+import math
 import textwrap
 import time
 import typing as tp
@@ -20,7 +21,43 @@ def get_posts_2500(
     extended: int = 0,
     fields: tp.Optional[tp.List[str]] = None,
 ) -> tp.Dict[str, tp.Any]:
-    pass
+    script = f"""
+                var i = 0; 
+                var result = [];
+                while (i < {max_count}){{
+                    if ({offset}+i+100 > {count}){{
+                        result.push(API.wall.get({{
+                            "owner_id": "{owner_id}",
+                            "domain": "{domain}",
+                            "offset": "{offset} +i",
+                            "count": "{count}-(i+{offset})",
+                            "filter": "{filter}",
+                            "extended": "{extended}",
+                            "fields": "{fields}"
+                        }}));
+                    }} 
+                    result.push(API.wall.get({{
+                        "owner_id": "{owner_id}",
+                        "domain": "{domain}",
+                        "offset": "{offset} +i",
+                        "count": "{count}",
+                        "filter": "{filter}",
+                        "extended": "{extended}",
+                        "fields": "{fields}"
+                    }}));
+                    i = i + {max_count};
+                }}
+                return result;
+            """
+    data = {
+        "code": script,
+        "access_token": VK_CONFIG["access_token"],
+        "v": VK_CONFIG["version"],
+    }
+    response = session.post("execute", data=data)
+    if "error" in response.json() or not response.ok:
+        raise APIError(response.json()["error"]["error_msg"])
+    return response.json()["response"]["items"]
 
 
 def get_wall_execute(
@@ -49,4 +86,37 @@ def get_wall_execute(
     :param fields: Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
     :param progress: Callback для отображения прогресса.
     """
-    pass
+    ls = []
+    response = session.post(
+        "execute",
+        data={
+            "code": f'return {{"count": API.wall.get({{"owner_id": "{owner_id}","domain": "{domain}","offset": "0","count": "1","filter": "{filter}"}}).count}};',
+            "access_token": VK_CONFIG["access_token"],
+            "v": VK_CONFIG["version"],
+        },
+    )
+    if "error" in response.json() or not response.ok:
+        raise APIError(response.json()["error"]["error_msg"])
+    if count != 0:
+        count = min(count, response.json()["response"]["count"])
+    else:
+        count = response.json()["response"]["count"]
+    if progress is None:
+        progress = lambda x: x
+
+    for i in progress(range((count + max_count - 1) // max_count)):
+        ls.append(
+            get_posts_2500(
+                owner_id,
+                domain,
+                offset + i * max_count,
+                count,
+                max_count,
+                filter,
+                extended,
+                fields,
+            )
+        )
+        if i % 3 == 0:
+            time.sleep(1)
+    return json_normalize(ls)
