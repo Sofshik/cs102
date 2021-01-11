@@ -16,16 +16,16 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     """
     age = []
     time = dt.date.today()
-    friends = get_friends(user_id, fields=["birth"]).items
+    friends = get_friends(user_id, fields=["bdate"]).items
     for friend in friends:
         try:
-            birth = dt.datetime.strptime(friend["birth"], "%d.%m.%Y")  # type: ignore
+            bdate = dt.datetime.strptime(friend["bdate"], "%d.%m.%Y")  # type: ignore
         except (KeyError, ValueError):
             continue
         age.append(
             time.year
-            - birth.year
-            - (time.month < birth.month or (time.month == birth.month and time.day < birth.day))
+            - bdate.year
+            - (time.month < bdate.month or (time.month == bdate.month and time.day < bdate.day))
         )
 
     if age:

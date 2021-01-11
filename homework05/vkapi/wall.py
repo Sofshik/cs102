@@ -4,8 +4,7 @@ import time
 import typing as tp
 from string import Template
 
-import pandas as pd  # type: ignore
-from pandas import json_normalize  # type: ignore
+import pandas  # type: ignore
 from vkapi import config, session  # type: ignore
 from vkapi.exceptions import APIError  # type: ignore
 
@@ -69,7 +68,7 @@ def get_wall_execute(
     extended: int = 0,
     fields: tp.Optional[tp.List[str]] = None,
     progress=None,
-) -> pd.DataFrame:
+) -> pandas.DataFrame:
     """
     Возвращает список записей со стены пользователя или сообщества.
 
@@ -85,37 +84,31 @@ def get_wall_execute(
     :param fields: Список дополнительных полей для профилей и сообществ, которые необходимо вернуть.
     :param progress: Callback для отображения прогресса.
     """
-    ls = []
-    response = session.post(
-        "execute",
-        data={
-            "code": f'return {{"count": API.wall.get({{"owner_id": "{owner_id}","domain": "{domain}","offset": "0","count": "1","filter": "{filter}"}}).count}};',
-            "access_token": config.VK_CONFIG["access_token"],
-            "v": config.VK_CONFIG["version"],
-        },
-    )
-    if "error" in response.json() or not response.ok:
-        raise APIError(response.json()["error"]["error_msg"])
-    if count != 0:
-        count = min(count, response.json()["response"]["count"])
-    else:
-        count = response.json()["response"]["count"]
+    outdated = pandas.DataFrame()
+    code = f"""
+            return API.wall.get ({{
+            "owner_id": "{owner_id}",
+            "domain": "{domain}",
+            "offset": "0",
+            "count": "1",
+            "filter": "{filter}",
+            "extended": "0",
+            "fields": ""
+}});
+"""
+    data = {"code": code}
+    response = session.post("execute", data=data).json()
+    if "error" in response:
+        raise APIError(response["error"]["error_msg"])
     if progress is None:
         progress = lambda x: x
-
-    for i in progress(range((count + max_count - 1) // max_count)):
-        ls.append(
-            get_posts_2500(
-                owner_id,
-                domain,
-                offset + i * max_count,
-                count,
-                max_count,
-                filter,
-                extended,
-                fields,
+    for _ in progress(
+        range(0, math.ceil((response["response"]["count"] if count == 0 else count) / max_count))
+    ):
+        outdated = outdated.append(
+            pandas.json_normalize(
+                get_posts_2500(owner_id, domain, offset, count, max_count, filter, extended, fields)
             )
         )
-        if i % 3 == 0:
-            time.sleep(1)
-    return json_normalize(ls)
+        time.sleep(1)
+    return outdated

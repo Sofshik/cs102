@@ -38,7 +38,7 @@ class Session(requests.Session):
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
-        super().__init__
+        super().__init__()
         self.base_url = base_url
 
         retry_strategy = Retry(

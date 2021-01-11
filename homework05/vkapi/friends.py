@@ -30,7 +30,7 @@ def get_friends(
     :param fields: Список полей, которые нужно получить для каждого пользователя.
     :return: Список идентификаторов друзей пользователя или список пользователей.
     """
-    param_dict = {
+    params = {
         "access_token": config.VK_CONFIG["access_token"],
         "v": config.VK_CONFIG["version"],
         "count": count,
@@ -38,7 +38,7 @@ def get_friends(
         "fields": ",".join(fields) if fields is not None else "",
         "offset": offset,
     }
-    response = session.get("friends.get", param_dict=param_dict)
+    response = session.get("friends.get", params=params)
     if "error" in response.json() or not response.ok:
         raise exceptions.APIError(response.json()["error"]["error_msg"])
     return FriendsResponse(**response.json()["response"])

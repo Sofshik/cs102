@@ -5,7 +5,7 @@ import community as community_louvain  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 import networkx as nx  # type: ignore
 import pandas as pd  # type: ignore
-from vkapi.friends import get_friends, get_mutual  # type: ignore
+from vkapi.friends import get_friends, get_mutual, MutualFriends  # type: ignore
 
 
 def ego_network(
@@ -18,7 +18,7 @@ def ego_network(
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
     graph = []
-    if friends is None:
+    if not friends:
         friends_fields: tp.List[tp.Dict[str, tp.Any]] = get_friends(user_id, fields=["nickname", "is_closed, deactivate"]).items  # type: ignore
         friends = [
             friend["id"]
