@@ -67,7 +67,7 @@ def describe_communities(
     friends: tp.List[tp.Dict[str, tp.Any]],
     fields: tp.Optional[tp.List[str]] = None,
 ) -> pd.DataFrame:
-    if fields is None:
+    if not fields:
         fields = ["first_name", "last_name"]
 
     data = []
