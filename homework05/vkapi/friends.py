@@ -81,6 +81,8 @@ def get_mutual(
         row = range(math.ceil(len(target_uids) / 100))
     for n in row:
         params = {
+            "access_token": config.VK_CONFIG["access_token"],
+            "v": config.VK_CONFIG["version"],
             "target_uid": target_uid,
             "source_uid": source_uid,
             "target_uids": ", ".join(map(str, target_uids)),
