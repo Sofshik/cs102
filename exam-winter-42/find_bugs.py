@@ -2,15 +2,15 @@ def read_tasks(tasktxt: str = "/home/sofia/cs102/exam-winter-42/tasks.txt"):
     tasks = []
     with open(tasktxt, "r", encoding="utf-8") as f:
         data = f.read()
-        lines = (a for a in data.split('\n') if a)
-        current = 0
+        lines = (a for a in data.split("\n") if a)
+        current = []
         for line in lines:
-            if 'task' in line:
+            if "task" in line:
                 task_count = int(line[4:]) - 1
                 tasks.insert(task_count, [])
                 current = tasks[task_count]
             else:
-                node = line.split(' -> ')
+                node = line.split(" -> ")
                 current.append(tuple(node))
     return tasks
 
@@ -50,5 +50,6 @@ def main():
     print(tasks)
     broken = find_bug(tasks[2])
     print(broken)
+
 
 main()
