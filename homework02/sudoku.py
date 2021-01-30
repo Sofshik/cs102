@@ -88,6 +88,34 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     ]
 
 
+def get_diags(
+    grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]
+) -> tp.Optional[tp.Union[tp.List[tp.List[str]], tp.List[str]]]:
+    """Возвращает все значения для диагональных линий для позиции pos при их наличии
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> get_block(grid, (0, 1))
+    None
+    >>> get_block(grid, (4, 4))
+    [['5', '.', '8', '.', '.', '.', '2', '.', '.'],['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+    >>> get_block(grid, (8, 8))
+    ['5', '.', '8', '.', '.', '.', '2', '.', '.']
+    """
+    firstDiag = []
+    secondDiag = []
+    for i in range(9):
+        firstDiag.append(grid[i][i])
+        secondDiag.append(grid[i][(i - 8) * -1])
+    if pos == [4, 4]:
+        diags = [firstDiag, secondDiag]
+        return diags
+    elif pos[0] == pos[1]:
+        return firstDiag
+    elif pos[0] == (pos[1] - 8) * -1:
+        return secondDiag
+    else:
+        return None
+
+
 def find_empty_positions(
     grid: tp.List[tp.List[str]],
 ) -> tp.Optional[tp.Tuple[int, int]]:
@@ -109,7 +137,9 @@ def find_empty_positions(
     return None
 
 
-def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
+def find_possible_values(
+    grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]
+) -> tp.Union[tp.Set[str], None]:
     """Вернуть множество возможных значения для указанной позиции
     >>> grid = read_sudoku('puzzle1.txt')
     >>> values = find_possible_values(grid, (0,2))
@@ -128,9 +158,9 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
             and (a not in get_block(grid, pos))
         ):
             values.add(a)
-    return values
     if not values:
         return None
+    return values
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
@@ -149,12 +179,13 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     if not position:
         return grid
     values = find_possible_values(grid, position)
-    for i in values:
-        grid[position[0]][position[1]] = i
-        solution = solve(grid)
-        if solution:
-            return solution
-        grid[position[0]][position[1]] = "."
+    if values:
+        for i in values:
+            grid[position[0]][position[1]] = i
+            solution = solve(grid)
+            if solution:
+                return solution
+            grid[position[0]][position[1]] = "."
     return None
 
 
@@ -169,6 +200,15 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
                 set(get_col(solution, pos))
             ) != len(get_col(solution, pos)):
                 return False
+            diags = get_diags(solution, pos)
+            if diags:
+                if pos == (4, 4):
+                    if len(diags[0]) != len(set(diags[0])) or len(diags[1]) != len(set(diags[1])):
+                        return False
+                if len(diags) != len(set(diags)):
+                    return False
+                if solution[i][j] in set(diags):
+                    return False
     for r in (0, 3, 6):
         for c in (0, 3, 6):
             if len(set(get_block(solution, (r, c)))) != len(get_block(solution, (r, c))):
