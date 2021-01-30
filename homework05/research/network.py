@@ -1,12 +1,11 @@
 import typing as tp
 from collections import defaultdict
 
-import community as community_louvain
-import matplotlib.pyplot as plt
-import networkx as nx
-import pandas as pd
-
-from vkapi.friends import get_friends, get_mutual
+import community as community_louvain  # type: ignore
+import matplotlib.pyplot as plt  # type: ignore
+import networkx as nx  # type: ignore
+import pandas as pd  # type: ignore
+from vkapi.friends import MutualFriends, get_friends, get_mutual  # type: ignore
 
 
 def ego_network(
@@ -18,7 +17,20 @@ def ego_network(
     :param user_id: Идентификатор пользователя, для которого строится граф друзей.
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
-    pass
+    graph = []
+    if not friends:
+        friends_fields: tp.List[tp.Dict[str, tp.Any]] = get_friends(user_id, fields=["nickname", "is_closed, deactivate"]).items  # type: ignore
+        friends = [
+            friend["id"]
+            for friend in friends_fields
+            if not (friend.get("deactivate") or friend.get("is_closed"))
+        ]
+    mutuals = get_mutual(user_id, target_uids=friends)
+    for mutual in mutuals:
+        mutual_m = tp.cast(MutualFriends, mutual)  # type: ignore
+        for common in mutual_m["common_friends"]:
+            graph.append((mutual_m["id"], common))
+    return graph
 
 
 def plot_ego_network(net: tp.List[tp.Tuple[int, int]]) -> None:
@@ -55,7 +67,7 @@ def describe_communities(
     friends: tp.List[tp.Dict[str, tp.Any]],
     fields: tp.Optional[tp.List[str]] = None,
 ) -> pd.DataFrame:
-    if fields is None:
+    if not fields:
         fields = ["first_name", "last_name"]
 
     data = []
