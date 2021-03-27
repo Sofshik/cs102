@@ -5,9 +5,9 @@ from math import log
 class NaiveBayesClassifier:
     def __init__(self, alpha: float = 1e-5):
         self.d = 0
-        self.word = defaultdict(lambda: 0) #type: ignore
-        self.class_words = defaultdict(lambda: 0) #type: ignore
-        self.y = defaultdict(lambda: 0) #type: ignore
+        self.word = defaultdict(lambda: 0)  #type: ignore
+        self.class_words = defaultdict(lambda: 0)  #type: ignore
+        self.y = defaultdict(lambda: 0)  #type: ignore
         self.alpha = alpha
 
     def fit(self, X, y):
