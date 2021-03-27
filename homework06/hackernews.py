@@ -1,6 +1,6 @@
 import string
 
-from bottle import redirect, request, route, run, template  #type: ignore
+from bottle import redirect, request, route, run, template  # type: ignore
 
 from bayes import NaiveBayesClassifier
 from db import News, session
