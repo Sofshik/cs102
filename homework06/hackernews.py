@@ -21,14 +21,14 @@ def add_label():
     id = int(query["id"])
     label = query["label"]
     s = session()
-    s.query(News.id).filter(News.id == id).update({News.label: label})
+    s.query(News).filter(News.id == id).update({News.label: label})
     s.commit()
     redirect("/news")
 
 
 @route("/update")
 def update_news():
-    news = get_news("https://news.ycombinator.com/", 3)
+    news = get_news("https://news.ycombinator.com/newest", 3)
     s = session()
     for new in news:
         if len(s.query(News.author).filter_by(author='author').all()) == 0 or len(s.query(News.title).filter_by(title='title').all()) == 0:
