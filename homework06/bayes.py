@@ -3,12 +3,11 @@ from math import log
 
 
 class NaiveBayesClassifier:
-
-    def __init__(self, alpha: int = 1e-5):
+    def __init__(self, alpha: float = 1e-5):
         self.d = 0
-        self.word = defaultdict(lambda: 0)
-        self.class_words = defaultdict(lambda: 0)
-        self.y = defaultdict(lambda: 0)
+        self.word = defaultdict(lambda: 0) #type: ignore
+        self.class_words = defaultdict(lambda: 0) #type: ignore
+        self.y = defaultdict(lambda: 0) #type: ignore
         self.alpha = alpha
 
     def fit(self, X, y):
@@ -32,7 +31,10 @@ class NaiveBayesClassifier:
             self.y.keys(),
             key=lambda cl: log(self.y[cl])
             + sum(
-                log((self.class_words[wrd, cl] + self.alpha) / (self.word[wrd] + self.alpha * self.d))
+                log(
+                    (self.class_words[wrd, cl] + self.alpha)
+                    / (self.word[wrd] + self.alpha * self.d)
+                )
                 for wrd in X.split()
             ),
         )
@@ -42,7 +44,4 @@ class NaiveBayesClassifier:
         prediction = []
         for one in X_test:
             prediction.append(self.predict(one))
-        return sum(0 if prediction[k] != y_test[k] else 1 for k in range(len(X_test))) / len(
-            X_test
-        )
-
+        return sum(0 if prediction[k] != y_test[k] else 1 for k in range(len(X_test))) / len(X_test)
