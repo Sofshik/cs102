@@ -34,69 +34,87 @@ Original file is located at
 - salary: >50K,<=50K
 """
 
-import pandas as pd
+import pandas as pd  # type: ignore
 
 data = pd.read_csv("https://raw.githubusercontent.com/Yorko/mlcourse.ai/master/data/adult.data.csv")
 data.head()
 
 """**1. Сколько мужчин и женщин (признак *sex*) представлено в этом наборе данных?**"""
 
-print(data['sex'].value_counts())
+print(data["sex"].value_counts())
 
 """**2. Каков средний возраст (признак *age*) женщин?**"""
 
-print(data[data['sex'] == 'Female']['age'].mean())
+print(data[data["sex"] == "Female"]["age"].mean())
 
 """**3. Какова доля граждан Германии (признак *native-country*)?**"""
 
-print(float((data['native-country'] == 'Germany').sum()) / data.shape[0])
+print(float((data["native-country"] == "Germany").sum()) / data.shape[0])
 
 """**4-5. Каковы средние значения и среднеквадратичные отклонения возраста тех, кто получает более 50K в год (признак *salary*) и тех, кто получает менее 50K в год? **"""
 
-less = data[data['salary'] == '<=50K']
-more = data[data['salary'] == '>50K']
+less = data[data["salary"] == "<=50K"]
+more = data[data["salary"] == ">50K"]
 
-less_mean = round(less['age'].mean())
-more_mean = round(more['age'].mean())
-less_std = round(less['age'].std(ddof=0))
-more_std = round(more['age'].std(ddof=0))
+less_mean = round(less["age"].mean())
+more_mean = round(more["age"].mean())
+less_std = round(less["age"].std(ddof=0))
+more_std = round(more["age"].std(ddof=0))
 print(("Mean age and standart deviation (less than 50K): %i +- %i years") % (less_mean, less_std))
 print(("Mean age and standart deviation (more than 50K): %i +- %i years") % (more_mean, more_std))
 
 """**6. Правда ли, что люди, которые получают больше 50k, имеют как минимум высшее образование? (признак *education – Bachelors, Prof-school, Assoc-acdm, Assoc-voc, Masters* или *Doctorate*)**"""
 
-print(data[data['salary'] == '>50K']['education'].unique())
+print(data[data["salary"] == ">50K"]["education"].unique())
 
 """**7. Выведите статистику возраста для каждой расы (признак *race*) и каждого пола. Используйте *groupby* и *describe*. Найдите таким образом максимальный возраст мужчин расы *Amer-Indian-Eskimo*.**"""
 
-group_data = data.groupby(['race', 'sex'])
+group_data = data.groupby(["race", "sex"])
 for (race, sex), data in group_data:
-  print("Race: %s, sex: %s" % (race, sex))
-  print(data["age"].describe())
+    print("Race: %s, sex: %s" % (race, sex))
+    print(data["age"].describe())
 
 """**8. Среди кого больше доля зарабатывающих много (>50K): среди женатых или холостых мужчин (признак *marital-status*)? Женатыми считаем тех, у кого *marital-status* начинается с *Married* (Married-civ-spouse, Married-spouse-absent или Married-AF-spouse), остальных считаем холостыми.**"""
 
-print(data[(data['sex'] == 'Male') & (data['marital-status'].isin(['Divorced', 'Never-married', 'Separated', 'Widowed'
-]))
-]['salary'].value_counts())
+print(
+    data[
+        (data["sex"] == "Male")
+        & (data["marital-status"].isin(["Divorced", "Never-married", "Separated", "Widowed"]))
+    ]["salary"].value_counts()
+)
 
-print(data[(data['sex'] == 'Male') & (data['marital-status'].str.startswith('Married'))
-]['salary'].value_counts())
+print(
+    data[(data["sex"] == "Male") & (data["marital-status"].str.startswith("Married"))][
+        "salary"
+    ].value_counts()
+)
 
-data['marital-status'].value_counts()
+data["marital-status"].value_counts()
 
 """**9. Какое максимальное число часов человек работает в неделю (признак *hours-per-week*)? Сколько людей работают такое количество часов и каков среди них процент зарабатывающих много?**"""
 
-print('Max hours per week:', data['hours-per-week'].max())
-print('Amount of people working max hours per week:', len(data[data['hours-per-week'] == data['hours-per-week'].max()]))
+print("Max hours per week:", data["hours-per-week"].max())
+print(
+    "Amount of people working max hours per week:",
+    len(data[data["hours-per-week"] == data["hours-per-week"].max()]),
+)
 
-perc = round(
-    len(data[(data['hours-per-week'] == data['hours-per-week'].max()) & (data['salary'] == '>50K')]) / 
-    len(data[data['hours-per-week'] == data['hours-per-week'].max()]), 2
-) * 100
-print('Percent of wealthy and hardworking: %i%%' % perc)
+perc = (
+    round(
+        len(
+            data[
+                (data["hours-per-week"] == data["hours-per-week"].max())
+                & (data["salary"] == ">50K")
+            ]
+        )
+        / len(data[data["hours-per-week"] == data["hours-per-week"].max()]),
+        2,
+    )
+    * 100
+)
+print("Percent of wealthy and hardworking: %i%%" % perc)
 
 """**10. Посчитайте среднее время работы (*hours-per-week*) зарабатывающих мало и много (*salary*) для каждой страны (*native-country*).**"""
 
-for (country, salary), group_data in data.groupby(['native-country', 'salary']):
-  print(country, salary, round(group_data['hours-per-week'].mean()))
+for (country, salary), group_data in data.groupby(["native-country", "salary"]):
+    print(country, salary, round(group_data["hours-per-week"].mean()))

@@ -18,19 +18,20 @@ Original file is located at
 **Заполните код в клетках и ответьте на вопросы в [веб-форме](https://docs.google.com/forms/d/1y8qj5iYpaVhczjWnZuHd5NRR_sdCGy3eTF5n-qPKknQ).**
 """
 
-# Commented out IPython magic to ensure Python compatibility.
-import pandas as pd
-
 # %matplotlib inline
-import matplotlib.pyplot as plt
-import seaborn as sns
+import matplotlib.pyplot as plt  # type: ignore
+
+# Commented out IPython magic to ensure Python compatibility.
+import pandas as pd  # type: ignore
+import seaborn as sns  # type: ignore
 
 """## Загрузка и знакомство с данными
 
 Для работы вам понадобятся предобработанные данные нашего учебного конкурса на kaggle [«Прогноз популярности статьи на Хабре»](https://www.kaggle.com/c/howpop-habrahabr-favs). Скачайте [данные](https://drive.google.com/file/d/1nV2qV9otN3LnVSDqy95hvpJdb6aWtATk/view?usp=sharing) соревнования (данные были удалены с Kaggle ради организации последующего идентичного соревнования, так что тут ссылка на Google Drive).
 """
 
-from google.colab import files
+from google.colab import files  # type: ignore
+
 upload = files.upload()
 
 # при необходимости поменяйте путь к данным
@@ -55,9 +56,7 @@ df.describe(include=["object", "bool"]).T  # бинарные и категор�
 # настройка внешнего вида графиков в seaborn
 sns.set_style("dark")
 sns.set_palette("RdBu")
-sns.set_context(
-    "notebook", font_scale=1.5, rc={"figure.figsize": (15, 5), "axes.titlesize": 18}
-)
+sns.set_context("notebook", font_scale=1.5, rc={"figure.figsize": (15, 5), "axes.titlesize": 18})
 
 """Столбец **`published`** (время публикации) содержит строки. Чтобы мы могли работать с этими данными как с датой/временем публикации, приведём их к типу `datetime`:"""
 
@@ -93,16 +92,14 @@ april2015
 april2016 = df.query("year == 2016 & month == 4").shape[0]
 april2016
 
-df.drop(filter(lambda c: c.endswith('_lognorm'), df.columns),
-        axis = 1,
-        inplace = True)
+df.drop(filter(lambda c: c.endswith("_lognorm"), df.columns), axis=1, inplace=True)
 sns.set_style("white")
 sns.set_palette("winter")
-sns.set_context("notebook", font_scale = 0.75,
-                rc = {"figure.figsize" : (30, 15), "axes.titlesize" : 12 })
-march_or_april = pd.DataFrame({"2015": [march2015, april2015], "2016": [march2016, april2016]}, index=["March", "April"])
-march_or_april.plot.bar(color=["sandybrown", "powderblue"],
-                       rot=0);
+sns.set_context("notebook", font_scale=0.75, rc={"figure.figsize": (30, 15), "axes.titlesize": 12})
+march_or_april = pd.DataFrame(
+    {"2015": [march2015, april2015], "2016": [march2016, april2016]}, index=["March", "April"]
+)
+march_or_april.plot.bar(color=["sandybrown", "powderblue"], rot=0)
 
 """## 2\. Проанализируйте публикации в месяце из предыдущего вопроса
 
@@ -120,7 +117,7 @@ list = df.dates.value_counts().index[0]
 
 df_popmonth = df[df.dates == list]
 df_popmonth["day"] = [p.day for p in df_popmonth.published]
-sns.countplot(x="day", data = df_popmonth)
+sns.countplot(x="day", data=df_popmonth)
 
 """## 3\. Когда лучше всего публиковать статью?
 
@@ -133,7 +130,12 @@ sns.countplot(x="day", data = df_popmonth)
 
 print(df.groupby("hour")["views"].mean().sort_values(ascending=False)[:5])
 print(df.groupby("hour")["comments"].mean().sort_values(ascending=False)[:5])
-print(df[df.domain == 'habrahabr.ru'].groupby("hour")["comments"].mean().sort_values(ascending=False)[:5])
+print(
+    df[df.domain == "habrahabr.ru"]
+    .groupby("hour")["comments"]
+    .mean()
+    .sort_values(ascending=False)[:5]
+)
 
 df[df.domain == "habrahabr.ru"].groupby("hour")[["comments"]].mean().plot()
 
@@ -145,19 +147,25 @@ df[df.domain == "habrahabr.ru"].groupby("hour")[["comments"]].mean().plot()
 * @ilya42
 """
 
-df[df.author.isin(["@Mordatyj", "@Mithgol", "@alizar", "@ilya42"])].groupby("author")[["votes_minus"]].mean().sort_values("votes_minus", ascending = False)
+df[df.author.isin(["@Mordatyj", "@Mithgol", "@alizar", "@ilya42"])].groupby("author")[
+    ["votes_minus"]
+].mean().sort_values("votes_minus", ascending=False)
 
-person = pd.DataFrame({"votes_minus": [20.481081, 7.928191, 7.471455, 6.216797]}, index=["@Mithgol", "@alizar", "@Mordatyj", "@ilya42"])
-person.plot.bar(color=["powderblue"],
-                       rot=0);
+person = pd.DataFrame(
+    {"votes_minus": [20.481081, 7.928191, 7.471455, 6.216797]},
+    index=["@Mithgol", "@alizar", "@Mordatyj", "@ilya42"],
+)
+person.plot.bar(color=["powderblue"], rot=0)
 
 """## 5\. Сравните субботы и понедельники
 
 Правда ли, что по субботам авторы пишут в основном днём, а по понедельникам — в основном вечером?
 """
 
-figure = plt.figure(figsize=(20,20))
-figure.add_subplot(1,1,1)
+figure = plt.figure(figsize=(20, 20))
+figure.add_subplot(1, 1, 1)
 
-plot = sns.countplot(y = "hour", hue = "dayofweek", data = df[df.dayofweek.isin([1, 6])], palette="winter")
-plot.set_title("Количество публикаций за час", fontweight = "bold")
+plot = sns.countplot(
+    y="hour", hue="dayofweek", data=df[df.dayofweek.isin([1, 6])], palette="winter"
+)
+plot.set_title("Количество публикаций за час", fontweight="bold")
