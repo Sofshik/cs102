@@ -13,6 +13,6 @@ for row in rows:
 limit = len(rows) // 100 * 70
 X_train, y_train, X_test, y_test = X[:limit], y[:limit], X[limit:], y[limit:]
 
-model.fit(X, y)
+model.fit(X_train, y_train)
 
 print(model.score(X_test, y_test))
