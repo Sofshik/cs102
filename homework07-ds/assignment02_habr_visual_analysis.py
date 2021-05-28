@@ -19,7 +19,7 @@ Original file is located at
 """
 
 # %matplotlib inline
-import matplotlib.pyplot as plt  # type: ignore
+import matplotlib.pyplot as plt  #  type: ignore
 
 # Commented out IPython magic to ensure Python compatibility.
 import pandas as pd  # type: ignore
@@ -30,7 +30,7 @@ import seaborn as sns  # type: ignore
 Для работы вам понадобятся предобработанные данные нашего учебного конкурса на kaggle [«Прогноз популярности статьи на Хабре»](https://www.kaggle.com/c/howpop-habrahabr-favs). Скачайте [данные](https://drive.google.com/file/d/1nV2qV9otN3LnVSDqy95hvpJdb6aWtATk/view?usp=sharing) соревнования (данные были удалены с Kaggle ради организации последующего идентичного соревнования, так что тут ссылка на Google Drive).
 """
 
-from google.colab import files  # type: ignore
+from google.colab import files  #  type: ignore
 
 upload = files.upload()
 
@@ -101,6 +101,8 @@ march_or_april = pd.DataFrame(
 )
 march_or_april.plot.bar(color=["sandybrown", "powderblue"], rot=0)
 
+plt.show()
+
 """## 2\. Проанализируйте публикации в месяце из предыдущего вопроса
 
 Выберите один или несколько вариантов:
@@ -119,6 +121,15 @@ df_popmonth = df[df.dates == list]
 df_popmonth["day"] = [p.day for p in df_popmonth.published]
 sns.countplot(x="day", data=df_popmonth)
 
+plt.show()
+
+
+print('По субботам на гиктаймс и на хабрахабр публикуют примерно одинаковое число статей')
+sns.countplot(x = 'dayofweek', hue = 'domain', data = df_popmonth, palette="Set1")
+
+plt.show()
+
+
 """## 3\. Когда лучше всего публиковать статью?
 
 * Больше всего просмотров набирают статьи, опубликованные в 12 часов дня
@@ -128,6 +139,7 @@ sns.countplot(x="day", data=df_popmonth)
 * На хабре дневные статьи комментируют чаще, чем вечерние
 """
 
+print('Больше всего просмотров набирают статьи, опубликованные в 12 часов дня и У опубликованных в 10 утра постов больше всего комментариев')
 print(df.groupby("hour")["views"].mean().sort_values(ascending=False)[:5])
 print(df.groupby("hour")["comments"].mean().sort_values(ascending=False)[:5])
 print(
@@ -138,6 +150,24 @@ print(
 )
 
 df[df.domain == "habrahabr.ru"].groupby("hour")[["comments"]].mean().plot()
+
+plt.show()
+
+print('#Больше всего просмотров набирают статьи, опубликованные в 6 часов утра')
+df.groupby('hour')['comments'].mean().plot(title = 'Comments by hour', color = "tab:red")
+
+plt.show()
+
+print('Максимальное число комментариев на гиктаймсе набрала статья, опубликованная в 9 часов вечера')
+df[df.domain == 'geektimes.ru'].groupby('hour')[['comments']].max().plot(title = 'Max comments by hour on geektimes.ru', color = "tab:red")
+
+plt.show()
+
+print('На хабре дневные статьи комментируют чаще, чем вечерние')
+df[df.domain == 'habrahabr.ru'].groupby('hour')[['comments']].mean().plot(title = 'Comments by hour on habrahabr.ru',color = "tab:red")
+
+plt.show()
+
 
 """## 4\. Кого из топ-20 авторов чаще всего минусуют?
 
@@ -157,6 +187,9 @@ person = pd.DataFrame(
 )
 person.plot.bar(color=["powderblue"], rot=0)
 
+plt.show()
+print("Ответ: @Mithgol")
+
 """## 5\. Сравните субботы и понедельники
 
 Правда ли, что по субботам авторы пишут в основном днём, а по понедельникам — в основном вечером?
@@ -169,3 +202,6 @@ plot = sns.countplot(
     y="hour", hue="dayofweek", data=df[df.dayofweek.isin([1, 6])], palette="winter"
 )
 plot.set_title("Количество публикаций за час", fontweight="bold")
+
+plt.show()
+print("Ответ: нет")
